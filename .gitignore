@@ -34,6 +34,7 @@ target/
 *.zip
 *.tar
 *.tar.gz
+*.versionsBackup
 
 ### vscode ###
 .vscode
@@ -56,3 +57,4 @@ target/
 Thumbs.db
 Servers
 .metadata
+.flattened-pom.xml

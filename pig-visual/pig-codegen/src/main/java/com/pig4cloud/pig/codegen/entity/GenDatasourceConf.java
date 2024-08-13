@@ -1,23 +1,22 @@
 /*
- * Copyright (c) 2020 pig4cloud Authors. All Rights Reserved.
+ *    Copyright (c) 2018-2025, lengleng All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * Neither the name of the pig4cloud.com developer nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * Author: lengleng (wangiegie@gmail.com)
  */
 package com.pig4cloud.pig.codegen.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,8 +39,8 @@ public class GenDatasourceConf extends Model<GenDatasourceConf> {
 	/**
 	 * 主键
 	 */
-	@TableId
-	private Integer id;
+	@TableId(type = IdType.ASSIGN_ID)
+	private Long id;
 
 	/**
 	 * 名称
@@ -49,9 +48,39 @@ public class GenDatasourceConf extends Model<GenDatasourceConf> {
 	private String name;
 
 	/**
-	 * jdbcurl
+	 * 数据库类型
+	 */
+	private String dsType;
+
+	/**
+	 * 配置类型 （0 主机形式 | 1 url形式）
+	 */
+	private Integer confType;
+
+	/**
+	 * 主机地址
+	 */
+	private String host;
+
+	/**
+	 * 端口
+	 */
+	private Integer port;
+
+	/**
+	 * jdbc-url
 	 */
 	private String url;
+
+	/**
+	 * 实例
+	 */
+	private String instance;
+
+	/**
+	 * 数据库名称
+	 */
+	private String dsName;
 
 	/**
 	 * 用户名
@@ -66,17 +95,20 @@ public class GenDatasourceConf extends Model<GenDatasourceConf> {
 	/**
 	 * 创建时间
 	 */
-	private LocalDateTime createDate;
+	@TableField(fill = FieldFill.INSERT)
+	private LocalDateTime createTime;
 
 	/**
-	 * 更新
+	 * 修改时间
 	 */
-	private LocalDateTime updateDate;
+	@TableField(fill = FieldFill.UPDATE)
+	private LocalDateTime updateTime;
 
 	/**
-	 * 删除标记
+	 * 0-正常，1-删除
 	 */
 	@TableLogic
+	@TableField(fill = FieldFill.INSERT)
 	private String delFlag;
 
 }

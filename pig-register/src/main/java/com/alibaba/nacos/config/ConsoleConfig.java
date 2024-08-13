@@ -16,10 +16,6 @@
 
 package com.alibaba.nacos.config;
 
-import java.time.ZoneId;
-
-import javax.annotation.PostConstruct;
-
 import com.alibaba.nacos.core.code.ControllerMethodsCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
@@ -31,6 +27,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import javax.annotation.PostConstruct;
+import java.time.ZoneId;
+
 /**
  * Console config.
  *
@@ -40,7 +39,7 @@ import org.springframework.web.filter.CorsFilter;
  */
 @Component
 @EnableScheduling
-@PropertySource("/application.properties")
+@PropertySource("/application.yml")
 public class ConsoleConfig {
 
 	@Autowired
@@ -61,7 +60,7 @@ public class ConsoleConfig {
 	public CorsFilter corsFilter() {
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
-		config.addAllowedOriginPattern("*");
+		config.addAllowedOrigin("*");
 		config.addAllowedHeader("*");
 		config.setMaxAge(18000L);
 		config.addAllowedMethod("*");

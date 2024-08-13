@@ -16,8 +16,9 @@
 
 package com.pig4cloud.pig.common.datasource.config;
 
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
+import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.pig4cloud.pig.common.datasource.support.DataSourceConstants;
 import org.jasypt.encryption.StringEncryptor;
 
@@ -39,8 +40,10 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
 
 	private final StringEncryptor stringEncryptor;
 
-	public JdbcDynamicDataSourceProvider(StringEncryptor stringEncryptor, DataSourceProperties properties) {
-		super(properties.getDriverClassName(), properties.getUrl(), properties.getUsername(), properties.getPassword());
+	public JdbcDynamicDataSourceProvider(DefaultDataSourceCreator defaultDataSourceCreator,
+			StringEncryptor stringEncryptor, DataSourceProperties properties) {
+		super(defaultDataSourceCreator, properties.getDriverClassName(), properties.getUrl(), properties.getUsername(),
+				properties.getPassword());
 		this.stringEncryptor = stringEncryptor;
 		this.properties = properties;
 	}
@@ -62,7 +65,6 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
 			String password = rs.getString(DataSourceConstants.DS_USER_PWD);
 			String url = rs.getString(DataSourceConstants.DS_JDBC_URL);
 			DataSourceProperty property = new DataSourceProperty();
-			property.setDriverClassName(DataSourceConstants.DS_DRIVER);
 			property.setUsername(username);
 			property.setLazy(true);
 			property.setPassword(stringEncryptor.decrypt(password));
@@ -76,7 +78,6 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
 		property.setPassword(properties.getPassword());
 		property.setUrl(properties.getUrl());
 		property.setLazy(true);
-		property.setDriverClassName(DataSourceConstants.DS_DRIVER);
 		map.put(DataSourceConstants.DS_MASTER, property);
 		return map;
 	}

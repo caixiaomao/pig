@@ -40,4 +40,14 @@ public interface ConfigConstants {
 	 */
 	String LOG_BASEDIR = "server.tomcat.basedir";
 
+	/**
+	 * access_log日志开关
+	 */
+	String LOG_ENABLED = "server.tomcat.accesslog.enabled";
+
+	/**
+	 * 路径 nacos context path
+	 */
+	String NACOS_CONTEXT_PATH = "server.servlet.contextPath";
+
 }

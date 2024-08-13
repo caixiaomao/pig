@@ -1,29 +1,32 @@
 /*
- * Copyright (c) 2020 pig4cloud Authors. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *      Copyright (c) 2018-2025, lengleng All rights reserved.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Redistributions of source code must retain the above copyright notice,
+ *  this list of conditions and the following disclaimer.
+ *  Redistributions in binary form must reproduce the above copyright
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
+ *  Neither the name of the pig4cloud.com developer nor the names of its
+ *  contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
+ *  Author: lengleng (wangiegie@gmail.com)
+ *
  */
 
 package com.pig4cloud.pig.admin.api.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -31,82 +34,122 @@ import javax.validation.constraints.NotBlank;
  * </p>
  *
  * @author lengleng
- * @since 2019/2/1
+ * @since 2018-05-15
  */
 @Data
+@Schema(description = "客户端信息")
 @EqualsAndHashCode(callSuper = true)
 public class SysOauthClientDetails extends Model<SysOauthClientDetails> {
 
 	private static final long serialVersionUID = 1L;
 
+	@TableId(value = "id", type = IdType.ASSIGN_ID)
+	@Schema(description = "id")
+	private Long id;
+
 	/**
 	 * 客户端ID
 	 */
 	@NotBlank(message = "client_id 不能为空")
-	@TableId(value = "client_id", type = IdType.INPUT)
-	@ApiModelProperty(value = "客户端id")
+	@Schema(description = "客户端id")
 	private String clientId;
 
 	/**
 	 * 客户端密钥
 	 */
 	@NotBlank(message = "client_secret 不能为空")
-	@ApiModelProperty(value = "客户端密钥")
+	@Schema(description = "客户端密钥")
 	private String clientSecret;
 
 	/**
 	 * 资源ID
 	 */
-	@ApiModelProperty(value = "资源id列表")
+	@Schema(description = "资源id列表")
 	private String resourceIds;
 
 	/**
 	 * 作用域
 	 */
 	@NotBlank(message = "scope 不能为空")
-	@ApiModelProperty(value = "作用域")
+	@Schema(description = "作用域")
 	private String scope;
 
 	/**
-	 * 授权方式（A,B,C）
+	 * 授权方式[A,B,C]
 	 */
-	@ApiModelProperty(value = "授权方式")
-	private String authorizedGrantTypes;
+	@Schema(description = "授权方式")
+	private String[] authorizedGrantTypes;
 
 	/**
 	 * 回调地址
 	 */
-	@ApiModelProperty(value = "回调地址")
+	@Schema(description = "回调地址")
 	private String webServerRedirectUri;
 
 	/**
 	 * 权限
 	 */
-	@ApiModelProperty(value = "权限列表")
+	@Schema(description = "权限列表")
 	private String authorities;
 
 	/**
 	 * 请求令牌有效时间
 	 */
-	@ApiModelProperty(value = "请求令牌有效时间")
+	@Schema(description = "请求令牌有效时间")
 	private Integer accessTokenValidity;
 
 	/**
 	 * 刷新令牌有效时间
 	 */
-	@ApiModelProperty(value = "刷新令牌有效时间")
+	@Schema(description = "刷新令牌有效时间")
 	private Integer refreshTokenValidity;
 
 	/**
 	 * 扩展信息
 	 */
-	@ApiModelProperty(value = "扩展信息")
+	@Schema(description = "扩展信息")
 	private String additionalInformation;
 
 	/**
 	 * 是否自动放行
 	 */
-	@ApiModelProperty(value = "是否自动放行")
+	@Schema(description = "是否自动放行")
 	private String autoapprove;
+
+	/**
+	 * 删除标记
+	 */
+	@TableLogic
+	@TableField(fill = FieldFill.INSERT)
+	@Schema(description = "删除标记,1:已删除,0:正常")
+	private String delFlag;
+
+	/**
+	 * 创建人
+	 */
+	@TableField(fill = FieldFill.INSERT)
+	@Schema(description = "创建人")
+	private String createBy;
+
+	/**
+	 * 修改人
+	 */
+	@TableField(fill = FieldFill.UPDATE)
+	@Schema(description = "修改人")
+	private String updateBy;
+
+	/**
+	 * 创建时间
+	 */
+	@TableField(fill = FieldFill.INSERT)
+	@Schema(description = "创建时间")
+	private LocalDateTime createTime;
+
+	/**
+	 * 更新时间
+	 */
+	@TableField(fill = FieldFill.UPDATE)
+	@Schema(description = "更新时间")
+	private LocalDateTime updateTime;
 
 }

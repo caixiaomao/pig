@@ -17,70 +17,72 @@
 package com.pig4cloud.pig.common.security.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
+import feign.RequestInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.client.DefaultResponseErrorHandler;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Collections;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 
 /**
  * @author lengleng
- * @date 2020-06-23
+ * @date 2022-06-02
  */
+@RequiredArgsConstructor
 @EnableConfigurationProperties(PermitAllUrlProperties.class)
 public class PigResourceServerAutoConfiguration {
 
+	/**
+	 * 鉴权具体的实现逻辑
+	 * @return （#pms.xxx）
+	 */
 	@Bean("pms")
 	public PermissionService permissionService() {
 		return new PermissionService();
 	}
 
-	@Bean
-	public PigAccessDeniedHandler pigAccessDeniedHandler(ObjectMapper objectMapper) {
-		return new PigAccessDeniedHandler(objectMapper);
-	}
-
+	/**
+	 * 请求令牌的抽取逻辑
+	 * @param urlProperties 对外暴露的接口列表
+	 * @return BearerTokenExtractor
+	 */
 	@Bean
 	public PigBearerTokenExtractor pigBearerTokenExtractor(PermitAllUrlProperties urlProperties) {
 		return new PigBearerTokenExtractor(urlProperties);
 	}
 
+	/**
+	 * 资源服务器异常处理
+	 * @param objectMapper jackson 输出对象
+	 * @param securityMessageSource 自定义国际化处理器
+	 * @return ResourceAuthExceptionEntryPoint
+	 */
 	@Bean
-	public ResourceAuthExceptionEntryPoint resourceAuthExceptionEntryPoint(ObjectMapper objectMapper) {
-		return new ResourceAuthExceptionEntryPoint(objectMapper);
+	public ResourceAuthExceptionEntryPoint resourceAuthExceptionEntryPoint(ObjectMapper objectMapper,
+			MessageSource securityMessageSource) {
+		return new ResourceAuthExceptionEntryPoint(objectMapper, securityMessageSource);
 	}
 
+	/**
+	 * 资源服务器toke内省处理器
+	 * @param authorizationService token 存储实现
+	 * @return TokenIntrospector
+	 */
 	@Bean
-	@Primary
-	@LoadBalanced
-	public RestTemplate lbRestTemplate() {
-		RestTemplate restTemplate = new RestTemplate();
+	public OpaqueTokenIntrospector opaqueTokenIntrospector(OAuth2AuthorizationService authorizationService) {
+		return new PigCustomOpaqueTokenIntrospector(authorizationService);
+	}
 
-		// 传递ACCEPT JSON
-		restTemplate.setInterceptors(Collections.singletonList((request, body, execution) -> {
-			request.getHeaders().set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-			return execution.execute(request, body);
-		}));
-
-		// 处理400 异常
-		restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
-			@Override
-			@SneakyThrows
-			public void handleError(ClientHttpResponse response) {
-				if (response.getRawStatusCode() != HttpStatus.BAD_REQUEST.value()) {
-					super.handleError(response);
-				}
-			}
-		});
-		return restTemplate;
+	/**
+	 * 注入 oauth2 feign token 增强
+	 * @param tokenResolver token获取处理器
+	 * @return 拦截器
+	 */
+	@Bean
+	public RequestInterceptor oauthRequestInterceptor(BearerTokenResolver tokenResolver) {
+		return new PigOAuthRequestInterceptor(tokenResolver);
 	}
 
 }

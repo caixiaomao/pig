@@ -17,13 +17,14 @@
 package com.pig4cloud.pig.common.core.config;
 
 import cn.hutool.core.date.DatePattern;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.time.format.DateTimeFormatter;
 
 import static org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type.SERVLET;
 
@@ -33,7 +34,7 @@ import static org.springframework.boot.autoconfigure.condition.ConditionalOnWebA
  * <p>
  * 注入自自定义SQL 过滤
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnWebApplication(type = SERVLET)
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
@@ -49,10 +50,21 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
-		registrar.setTimeFormatter(DateTimeFormatter.ofPattern(DatePattern.NORM_TIME_PATTERN));
-		registrar.setDateFormatter(DateTimeFormatter.ofPattern(DatePattern.NORM_DATE_PATTERN));
-		registrar.setDateTimeFormatter(DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN));
+		registrar.setTimeFormatter(DatePattern.NORM_TIME_FORMATTER);
+		registrar.setDateFormatter(DatePattern.NORM_DATE_FORMATTER);
+		registrar.setDateTimeFormatter(DatePattern.NORM_DATETIME_FORMATTER);
 		registrar.registerFormatters(registry);
+	}
+
+	/**
+	 * 系统国际化文件配置
+	 * @return MessageSource
+	 */
+	@Bean
+	public MessageSource messageSource() {
+		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		messageSource.setBasename("classpath:i18n/messages");
+		return messageSource;
 	}
 
 }

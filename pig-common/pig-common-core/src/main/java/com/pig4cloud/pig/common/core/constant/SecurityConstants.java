@@ -30,12 +30,12 @@ public interface SecurityConstants {
 	/**
 	 * 前缀
 	 */
-	String PROJECT_PREFIX = "pig_";
+	String PROJECT_PREFIX = "pig";
 
 	/**
 	 * 项目的license
 	 */
-	String PROJECT_LICENSE = "made by pig";
+	String PROJECT_LICENSE = "https://pig4cloud.com";
 
 	/**
 	 * 内部
@@ -50,7 +50,7 @@ public interface SecurityConstants {
 	/**
 	 * 默认登录URL
 	 */
-	String OAUTH_TOKEN_URL = "/oauth/token";
+	String OAUTH_TOKEN_URL = "/oauth2/token";
 
 	/**
 	 * grant_type
@@ -58,51 +58,39 @@ public interface SecurityConstants {
 	String REFRESH_TOKEN = "refresh_token";
 
 	/**
+	 * password 模式
+	 */
+	String PASSWORD = "password";
+
+	/**
+	 * 手机号登录
+	 */
+	String MOBILE = "mobile";
+
+	/**
 	 * {bcrypt} 加密的特征码
 	 */
 	String BCRYPT = "{bcrypt}";
 
 	/**
-	 * sys_oauth_client_details 表的字段，不包括client_id、client_secret
+	 * {noop} 加密的特征码
 	 */
-	String CLIENT_FIELDS = "client_id, CONCAT('{noop}',client_secret) as client_secret, resource_ids, scope, "
-			+ "authorized_grant_types, web_server_redirect_uri, authorities, access_token_validity, "
-			+ "refresh_token_validity, additional_information, autoapprove";
+	String NOOP = "{noop}";
 
 	/**
-	 * JdbcClientDetailsService 查询语句
+	 * 用户名
 	 */
-	String BASE_FIND_STATEMENT = "select " + CLIENT_FIELDS + " from sys_oauth_client_details";
+	String USERNAME = "username";
 
 	/**
-	 * 默认的查询语句
+	 * 用户信息
 	 */
-	String DEFAULT_FIND_STATEMENT = BASE_FIND_STATEMENT + " order by client_id";
+	String DETAILS_USER = "user_info";
 
 	/**
-	 * 按条件client_id 查询
-	 */
-	String DEFAULT_SELECT_STATEMENT = BASE_FIND_STATEMENT + " where client_id = ?";
-
-	/***
-	 * 资源服务器默认bean名称
-	 */
-	String RESOURCE_SERVER_CONFIGURER = "resourceServerConfigurerAdapter";
-
-	/**
-	 * 用户ID字段
+	 * 用户ID
 	 */
 	String DETAILS_USER_ID = "user_id";
-
-	/**
-	 * 用户名字段
-	 */
-	String DETAILS_USERNAME = "username";
-
-	/**
-	 * 用户部门字段
-	 */
-	String DETAILS_DEPT_ID = "dept_id";
 
 	/**
 	 * 协议字段
@@ -113,5 +101,30 @@ public interface SecurityConstants {
 	 * 验证码有效期,默认 60秒
 	 */
 	long CODE_TIME = 60;
+
+	/**
+	 * 验证码长度
+	 */
+	String CODE_SIZE = "6";
+
+	/**
+	 * 客户端模式
+	 */
+	String CLIENT_CREDENTIALS = "client_credentials";
+
+	/**
+	 * 客户端ID
+	 */
+	String CLIENT_ID = "clientId";
+
+	/**
+	 * 短信登录 参数名称
+	 */
+	String SMS_PARAMETER_NAME = "mobile";
+
+	/**
+	 * 授权码模式confirm
+	 */
+	String CUSTOM_CONSENT_PAGE_URI = "/token/confirm_access";
 
 }
